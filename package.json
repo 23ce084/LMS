@@ -2,17 +2,17 @@
   "name": "lms",
   "version": "1.0.0",
   "description": "a backend of lms",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon src/index.js"
   },
   "keywords": [
     "javascript",
     "backend"
   ],
   "author": "parth pansuriya",
-  "license": "ISC",
-  "devDependencies": {
-    "nodemon": "^3.1.10"
+  "license": "ISC"
+ 
   }
-}
+
