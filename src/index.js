@@ -1,61 +1,53 @@
-// import mongoose, { connect } from "mongoose";    
-// import { DB_NAME } from "./constants";
+// Load environment variables
 import dotenv from "dotenv";
-import connectDB from "./db/index.js";
-dotenv.config({
-    path :'./env'
-})
+dotenv.config();
 
-
-
-connectDB()
-.then(() => {
-   app.listen( process.env.PORT || 8000,() => {
-      console.log(`server is runnibg at port : $ {process.env.PORT}`);
-      
-   })
-})
-.catch((error) => {
-   console.log("MONGODB CONNECTION ERROR",error);
-   
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
+// Import required modules
 import express from "express";
-const app = express()
+import mongoose from "mongoose";
+import cookieparser from "cookie-parser";
+import cors from "cors";
+
+// Initialize express app
+const app = express();
+
+// Middleware
+app.use(express.json());
+app.use(cors({
+    origin: process.env.CORS_ORIGIN,
+    credentials: true
+}));
+
+app.use(express.json({limit:"16kb"}))
+app.use(express.urlencoded({extended : true,limit:"16kb"}))
+app.use(express.static("public"))
+app.use(cookieparser())
+//routes import 
+
+import userrouter from './routes/user.routes.js'
 
 
-( async ()=> {
+app.use("/api/v1/users",userrouter)
+// Get Mongo URI from env
+const MONGO_URI = process.env.MONGO_URI;
 
-   try{
-  await mongoose.connect('${process.env.MONGODB_URI}/${DB_NAME}') 
-  app.on("error", (error) =>{
-    console.log("ERROR :",error)
-  throw error
-  } )
+// Check if URI is missing
+if (!MONGO_URI) {
+  console.error("❌ MONGO_URI is not defined in your .env file");
+  process.exit(1);
+}
 
-  app.listen(process.env.port,() =>{
-  console.log('App is listening on port $ {process.env.port}');
+// Connect to MongoDB
+mongoose.connect(MONGO_URI)
+  .then(() => {
+    console.log("✅ MONGODB CONNECTED SUCCESSFULLY");
+
+    // Start server after DB connects
+    const PORT = process.env.PORT || 8000;
+    app.listen(PORT, () => {
+      console.log(`🚀 Server is running at http://localhost:${PORT}`);
+    });
   })
-   }
-   catch(ERROR){
-    console.error = ("ERROR",error)
-    throw err
-   }
-
-})()
-   */
+  .catch((err) => {
+    console.error("❌ MONGODB CONNECTION ERROR", err.message);
+  });
