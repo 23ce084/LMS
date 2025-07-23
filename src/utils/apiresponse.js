@@ -9,6 +9,8 @@ class apiresponse{
     }
 }
 
+export{apiresponse}
+
 // informational response(100-199)
 // successful responses(200 - 299)
 // redirection messages(300 - 399)
